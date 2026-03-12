@@ -1,0 +1,3 @@
+marisasolchaile_db_user
+Fmcc7P7XlIV3OgkX
+mongodb+srv://marisasolchaile_db_user:Fmcc7P7XlIV3OgkX@smart-task-manager.wgk4sw6.mongodb.net/?appName=Smart-Task-Manager
