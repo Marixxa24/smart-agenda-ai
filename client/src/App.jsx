@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+// Definimos la URL de tu backend en Render
+const API_BASE_URL = "https://smart-agenda-ai.onrender.com/api/tasks";
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
@@ -12,10 +15,10 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      const res = await axios.get("https://smart-agenda-ai.onrender.com");
+      const res = await axios.get(API_BASE_URL);
       setTasks(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error al traer tareas:", err);
     }
   };
 
@@ -30,20 +33,17 @@ function App() {
     const taskData = { title, dueDate, dueTime };
     try {
       if (editingId) {
-        await axios.put(
-          `http://localhost:5000/api/tasks/${editingId}`,
-          taskData,
-        );
+        await axios.put(`${API_BASE_URL}/${editingId}`, taskData);
         setEditingId(null);
       } else {
-        await axios.post("http://localhost:5000/api/tasks", taskData);
+        await axios.post(API_BASE_URL, taskData);
       }
       setTitle("");
       setDueDate("");
       setDueTime("");
       fetchTasks();
     } catch (err) {
-      console.error(err);
+      console.error("Error al guardar:", err);
     } finally {
       setLoading(false);
     }
@@ -58,15 +58,19 @@ function App() {
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`);
-    setConfirmId(null);
-    fetchTasks();
+    try {
+      await axios.delete(`${API_BASE_URL}/${id}`);
+      setConfirmId(null);
+      fetchTasks();
+    } catch (err) {
+      console.error("Error al borrar:", err);
+    }
   };
 
   const toggleComplete = async (id, status) => {
     try {
       const newStatus = !status;
-      await axios.patch(`http://localhost:5000/api/tasks/${id}`, {
+      await axios.patch(`${API_BASE_URL}/${id}`, {
         completed: newStatus,
       });
       if (newStatus) {
@@ -75,7 +79,7 @@ function App() {
         fetchTasks();
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error al actualizar estado:", err);
     }
   };
 
